@@ -24,6 +24,23 @@ class Student(object):
         self._score = value
 
 
+class Person(object):
+    def __init__(self):
+        self.__name = 'SDAF'
+
+    def __getattr__(self, item):
+        # 当调用不存在的属性时，比如score，Python解释器会试图调用__getattr__(self, 'score')来尝试获得属性
+        # 只有在没有找到的情况下才会调用__getattr
+        if item == 'score':
+            return 90
+        if item == 'age':
+            return lambda: 25
+
+    def __call__(self, *args, **kwargs):
+        #  需要定义一个__call__()方法，就可以直接对实例进行调用
+        print('my name is %s' % self.__name)
+
+
 if __name__ == '__main__':
     """
     @property装饰器会把成员函数x转换为getter，相当于做了x = property(); x = x.getter(x_get) 
@@ -36,4 +53,12 @@ if __name__ == '__main__':
     print(s.score)  # 相等于调用了getter()
     print("========")
     print(s.score)
-    # s.score = 999
+
+    print("========")
+    p = Person()
+    print(p.score)
+    print(p.age())
+    p()
+    #  通过callable()函数，我们就可以判断一个对象是否是“可调用”对象
+    print(callable(Person()))
+    print(callable(p))
